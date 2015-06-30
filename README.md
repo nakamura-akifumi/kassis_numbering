@@ -1,13 +1,13 @@
 # kassis_numbering
 
-kassis numbering は、PostgreSQL と node.jsを利用した WebAPI 型の採番アプリケーションです。
+kassis numbering は、PostgreSQL と node.js を利用した WebAPI 型の採番アプリケーションです。
 
 ## Description
 
 
 ## Requirement
 
-* DB: PostgreSQL 
+* DB: PostgreSQL 9.x
 
 ## Install
 
@@ -16,25 +16,28 @@ brew install postgresql
 brew install node
 
 npm install pg
+npm install koa
+npm install koa-router
 
-mysql -u root 
-CREATE DATABASE kassis_numbering DEFAULT CHARACTER SET utf8;
-GRANT ALL PRIVILEGES ON kassis_numbering.* TO kassis@localhost IDENTIFIED BY 'kassis' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+createuser kassis
+createdb kassis_numbering
 
-mysql -u kassis -pkassis kassis_numbering < sql/numbering.sql
+psql -U kassis kassis_numbering < sql/numbering.sql
 
-
+サンプルデータ
+psql -U kassis kassis_numbering < sql/sample.sql
 
 ## Usage
 
+発注番号（識別子O）を新しい番号で採番する。
+curl http://api.examples:port/num/identifier/O 
 
 ## Contribution
 
 
 ## License
 
-[MIT](https://raw.githubusercontent.com/nakamura-akifumi/kassis_orange/master/LICENSE)
+[MIT](https://raw.githubusercontent.com/nakamura-akifumi/kassis_numbering/master/LICENSE)
 
 ## Author
 

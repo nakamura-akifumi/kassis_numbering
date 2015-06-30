@@ -1,5 +1,5 @@
 create table numbering (
- id INT NOT NULL PRIMARY KEY,
+ id serial NOT NULL PRIMARY KEY,
  identifier VARCHAR(16) NOT NULL,
  grp VARCHAR(16),
  display_name VARCHAR(32),
