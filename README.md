@@ -8,7 +8,7 @@ kassis numbering は、PostgreSQL と node.js を利用した WebAPI 型の採�
 
 * node.js 0.12以上
 * PostgreSQL 9.1 以上
-* 
+
 ### クライアント側
 
 * HTTPで通信出来れば問いません。
