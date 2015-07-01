@@ -19,26 +19,26 @@ kassis numbering は、PostgreSQL と node.js を利用した WebAPI 型の採�
 
 * MacOS X の場合
 
-``
+```
 $ brew install postgresql
 $ brew install node
-``
+```
 
 ### データベースの作成
 
-``
+```
 $ createuser kassis
 $ createdb kassis_numbering
-``
+```
 
 ### アプリケーションのダウンロードとインストール
 
-``
+```
 $ git clone https://github.com/nakamura-akifumi/kassis_numbering.git
 $ cd kassis_numbering
 $ npm install
 $ psql -U kassis kassis_numbering < sql/numbering.sql
-``
+```
 
 サンプルデータが必要な場合は以下のコマンドも実行してください。
 
