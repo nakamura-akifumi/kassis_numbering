@@ -1,0 +1,28 @@
+{
+  "name": "kassis_numbering",
+  "version": "0.1.0",
+  "description": "採番サービス",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.13.0",
+    "pg": "^4.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nakamura-akifumi/kassis_numbering.git"
+  },
+  "keywords": [
+    "kassis"
+  ],
+  "author": "Akifumi NAKAMURA (tmpz84@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nakamura-akifumi/kassis_numbering/issues"
+  },
+  "homepage": "https://github.com/nakamura-akifumi/kassis_numbering"
+}
