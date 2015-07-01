@@ -24,11 +24,23 @@ $ brew install postgresql
 $ brew install node
 ```
 
+* Cent OS 7 の場合
+
+```
+$ sudo yum install epel-release
+$ sudo yum install nodejs npm
+$ wget http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm
+$ sudo rpm -ivh pgdg-centos94-9.4-1.noarch.rpm
+$ sudo yum -y install postgresql94-server postgresql94-devel postgresql94-contrib
+$ sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb
+$ systemctl start postgresql-9.4
+```
+
 ### データベースの作成
 
 ```
 $ createuser kassis
-$ createdb kassis_numbering
+$ createdb -O kassis kassis_numbering
 ```
 
 ### アプリケーションのダウンロードとインストール
