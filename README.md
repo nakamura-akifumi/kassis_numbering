@@ -2,49 +2,67 @@
 
 kassis numbering は、PostgreSQL と node.js を利用した WebAPI 型の採番アプリケーションです。
 
-## Description
+## 必要なもの / Requirement
 
+### サービスサーバ側
 
-## Requirement
+* node.js 0.12以上
+* PostgreSQL 9.1 以上
+* 
+### クライアント側
 
-データベースに PostgreSQL 9.x を使います。
+* HTTPで通信出来れば問いません。
 
-## Install
+## インストール / Install
 
-ミドルウェアのインストール
+### ミドルウェアのインストール
 
-MacOS X の場合
-brew install postgresql
-brew install node
+* MacOS X の場合
 
-CentOS 7 の場合
+``
+$ brew install postgresql
+$ brew install node
+``
 
-データベースの作成
+### データベースの作成
 
+``
 $ createuser kassis
 $ createdb kassis_numbering
+``
 
-アプリケーションのダウンロードとインストール
+### アプリケーションのダウンロードとインストール
 
+``
 $ git clone https://github.com/nakamura-akifumi/kassis_numbering.git
 $ cd kassis_numbering
 $ npm install
 $ psql -U kassis kassis_numbering < sql/numbering.sql
+``
 
-サンプルデータが必要な場合は以下のコマンドを実行してください。
+サンプルデータが必要な場合は以下のコマンドも実行してください。
+
+``
 $ psql -U kassis kassis_numbering < sql/sample.sql
+``
 
 ## Usage
 
 npm start で起動します。
 
 発注番号（識別子O）を新しい番号で採番する。
+
+```
 $ curl http://localhost:8002/num/identifier/O 
 {"status":200,"last_value":"1109"}
+```
 
 存在しない識別を指定してエラーが返るのを確認する。
+
+```
 $ curl http://localhost:8002/num/identifier/INVALID_IDENTIFIER
 {"status":404,"msg":"invalid identifier"}
+```
 
 ## Contribution
 
@@ -57,7 +75,3 @@ pull request をお願いします。
 ## Author
 
 [Akifumi Nakamura](https://github.com/nakamura-akifumi)
-
-
-
-
