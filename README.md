@@ -2,6 +2,10 @@
 
 kassis numbering は、PostgreSQL と node.js を利用した WebAPI 型の採番アプリケーションです。
 
+## 概要 / Description
+
+* 識別子を送ると採番して JSON で返します。
+
 ## 必要なもの / Requirement
 
 ### サービスサーバ側
@@ -33,6 +37,7 @@ $ wget http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.no
 $ sudo rpm -ivh pgdg-centos94-9.4-1.noarch.rpm
 $ sudo yum -y install postgresql94-server postgresql94-devel postgresql94-contrib
 $ sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb
+$ sudo vi /var/lib/pgsql/9.4/data/pg_hba.conf
 $ systemctl start postgresql-9.4
 ```
 
