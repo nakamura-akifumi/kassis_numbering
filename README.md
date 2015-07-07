@@ -66,19 +66,49 @@ $ psql -U kassis kassis_numbering < sql/sample.sql
 ## Usage
 
 npm start で起動します。
+標準の待受けポート番号は 3000 です。
+環境変数 KASSIS_NUMBER_LISTEN_PORT にポート番号を設定することで出来ます。
+
+例：ポート番号を8003にするとき。
+
+```
+$ KASSIS_NUMBER_LISTEN_PORT=8003 npm start
+> kassis_numbering@0.1.0 start /opt/kassis_numbering
+> node app.js
+kassis numbering is Running on http://localhost:8003
+```
+
+次のインターフェイスを備えています。
+
+|Action|URL|Method|
+|:-----|:--|:----:|
+|LIST  | /inentifiers | GET |
+|CREATE| /identifier | POST |
+|READ  | /identifier/:id | GET |
+|UPDATE| /identifier/:id | PUT |
+|DELETE| /identifier/:id |DELETE |
+|NUMBERING| /numbering/:IDENTIFIER | GET |
+
 
 発注番号（識別子O）を新しい番号で採番する。
 
 ```
-$ curl http://localhost:8002/num/identifier/O 
+$ curl http://localhost:3000/numbering/O 
 {"status":200,"last_value":"1109"}
 ```
 
 存在しない識別を指定してエラーが返るのを確認する。
 
 ```
-$ curl http://localhost:8002/num/identifier/INVALID_IDENTIFIER
+$ curl http://localhost:3000/numbering/INVALID_IDENTIFIER
 {"status":404,"msg":"invalid identifier"}
+```
+
+新しい採番を作成する。
+
+```
+curl --data "identifier=J&display_name=test&prefix=&suffix=&is_padding=0&padding_length=&padding_character=&last_value=0" \
+  http://localhost:3000/identifier
 ```
 
 ## Contribution

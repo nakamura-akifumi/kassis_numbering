@@ -1,6 +1,6 @@
 create table numbering (
  id serial NOT NULL PRIMARY KEY,
- identifier VARCHAR(16) NOT NULL,
+ identifier VARCHAR(16) NOT NULL UNIQUE,
  grp VARCHAR(16),
  display_name VARCHAR(32),
  prefix VARCHAR(16),
