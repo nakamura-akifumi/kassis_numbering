@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var pg = require('pg');
 var path = require('path');
+var _s = require("underscore.string");
 
-var conString = process.env.DATABASE_URL || "postgres://kassis@localhost/kassis_numbering";
+var conString = process.env.KASSIS_NUMBER_DATABASE_URL || "postgres://kassis@localhost/kassis_numbering";
 
 //ルーティング設定
 router.get('/', function (req, res, next) {
@@ -228,12 +229,24 @@ router.get('/numbering/:identifier', function (req, res) {
             return;
         }
 
-        client.query("SELECT id as record_id, last_value from numbering where identifier = $1", [identifier], function(err, result) {
+        client.query("SELECT id as record_id, " +
+                     " is_padding, prefix, suffix, padding_length, padding_character, " +
+                     " last_value from numbering where identifier = $1", [identifier], function(err, result) {
             if (result.rows.length == 0) {
                 res.json({"status": 404, "msg": "invalid identifier"});
             } else {
                 record_id = result.rows[0].record_id;
-                last_value = parseInt(result.rows[0].last_value, 10) + 1;
+                result_value = last_value = parseInt(result.rows[0].last_value, 10) + 1;
+
+                if (result.rows[0].is_padding == 1) {
+                    result_value = _s.lpad(last_value, result.rows[0].padding_length, result.rows[0].padding_character);
+                }
+                if (result.rows[0].prefix && result.rows[0].prefix != "") {
+                    result_value = result.rows[0].prefix + result_value;
+                }
+                if (result.rows[0].suffix && result.rows[0].suffix != "") {
+                    result_value = result_value + result.rows[0].suffix;
+                }
 
                 client.query('UPDATE numbering SET last_value = $2 WHERE id = $1', [record_id, last_value], function (err, result) {
                     if (err) return rollback(client);
@@ -241,8 +254,7 @@ router.get('/numbering/:identifier', function (req, res) {
                     //client.query('COMMIT', client.end.bind(client));
                     done();
 
-                    //console.info("commit :" + last_value);
-                    res.json({"status": 200, 'last_value': "" + last_value + "" });
+                    res.json({"status": 200, 'last_value': "" + result_value + "" });
                 });
             }
         });

@@ -63,11 +63,14 @@ $ psql -U kassis kassis_numbering < sql/numbering.sql
 $ psql -U kassis kassis_numbering < sql/sample.sql
 ``
 
-## Usage
+## 使い方 / Usage
+
+### 使い方
 
 npm start で起動します。
 標準の待受けポート番号は 3000 です。
 環境変数 KASSIS_NUMBER_LISTEN_PORT にポート番号を設定することで出来ます。
+環境変数 KASSIS_NUMBER_DATABASE_URL に接続データベース名を設定することも可能です。
 
 例：ポート番号を8003にするとき。
 
@@ -76,6 +79,12 @@ $ KASSIS_NUMBER_LISTEN_PORT=8003 npm start
 > kassis_numbering@0.1.0 start /opt/kassis_numbering
 > node app.js
 kassis numbering is Running on http://localhost:8003
+```
+
+例：接続データベース名を変更するとき。（接続ユーザ nakamura 、データベース名 kassis_numbering）
+
+```
+$ KASSIS_NUMBER_DATABASE_URL="postgres://nakamura@localhost/kassis_numbering" npm start
 ```
 
 次のインターフェイスを備えています。
@@ -110,6 +119,23 @@ $ curl http://localhost:3000/numbering/INVALID_IDENTIFIER
 curl --data "identifier=J&display_name=test&prefix=&suffix=&is_padding=0&padding_length=&padding_character=&last_value=0" \
   http://localhost:3000/identifier
 ```
+
+### NUMBERING テーブルの設定
+
+numbering テーブルに設定値を保存します。
+
+|カラム|内容|備考|
+|:-----|:--|:----:|
+|id  | シリアル番号 |  |
+|identifier  | 識別子を指定します。APIからアクセスするときのキーにも使います。 | 文字最大16文字 |
+|display_name  | 表示用ラベル。人間が判断するためのメモで利用します。 | 文字最大64文字 |
+|prefix  | プレフィックスを指定します。指定がある場合は採番値の前に設定されます。 | 文字最大16文字 |
+|suffix  | サフィックスを指定します。指定がある場合は採番値の後に設定されます。 | 文字最大16文字 |
+|is_padding  | 指定の桁数で文字を埋めるかどうかを指定します。 | 0：埋めない 1:埋める |
+|padding_length  | 埋める場合の採番値と合わせた桁数を指定します。 | 数値のみ |
+|padding_character  | 埋める場合の文字を指定します。 | 文字最大16文字 |
+|check_digit_rule  | 最後にチェックデジットを付加する場合に指定します。 | v0.3では未実装です。0:未使用 1:モジュラス10/ウェイト3 2:モジュラス10/ウェイト2 |
+|last_value  | 最後に採番した番号が設定されています。 | 数値のみ |
 
 ## Contribution
 
