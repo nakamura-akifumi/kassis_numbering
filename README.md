@@ -113,16 +113,16 @@ $ curl http://localhost:3000/numbering/INVALID_IDENTIFIER
 {"status":404,"msg":"invalid identifier"}
 ```
 
-新しい採番を作成する。
+新しい採番ルールを作成する。
 
 ```
 curl --data "identifier=J&display_name=test&prefix=&suffix=&is_padding=0&padding_length=&padding_character=&last_value=0" \
   http://localhost:3000/identifier
 ```
 
-### NUMBERING テーブルの設定
+### 採番ルールの設定
 
-numbering テーブルに設定値を保存します。
+numbering テーブルに採番ルールを設定します。
 
 |カラム|内容|備考|
 |:-----|:--|:----:|
