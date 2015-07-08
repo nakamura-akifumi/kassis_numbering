@@ -6,6 +6,13 @@ var _s = require("underscore.string");
 
 var conString = process.env.KASSIS_NUMBER_DATABASE_URL || "postgres://kassis@localhost/kassis_numbering";
 
+// rollback
+var rollback = function(client, done) {
+    client.query('ROLLBACK', function(err) {
+        return done(err);
+    });
+};
+
 //ルーティング設定
 router.get('/', function (req, res, next) {
     //res.send('Hello Kassis Numbering\n');
@@ -225,38 +232,55 @@ router.get('/numbering/:identifier', function (req, res) {
 
     pg.connect(conString, function(err, client, done) {
         if (err) {
-            res.json({"status": 500, "msg": "database error."});
+            res.json({"status": 500, "msg": "database connect error."});
             return;
         }
 
-        client.query("SELECT id as record_id, " +
-                     " is_padding, prefix, suffix, padding_length, padding_character, " +
-                     " last_value from numbering where identifier = $1", [identifier], function(err, result) {
-            if (result.rows.length == 0) {
-                res.json({"status": 404, "msg": "invalid identifier"});
-            } else {
-                record_id = result.rows[0].record_id;
-                result_value = last_value = parseInt(result.rows[0].last_value, 10) + 1;
+        client.query('BEGIN', function(err) {
+            client.query("SELECT id as record_id, " +
+                " is_padding, prefix, suffix, padding_length, padding_character, " +
+                " last_value from numbering " +
+                " WHERE identifier = $1 FOR UPDATE", [identifier], function (err, result) {
 
-                if (result.rows[0].is_padding == 1) {
-                    result_value = _s.lpad(last_value, result.rows[0].padding_length, result.rows[0].padding_character);
-                }
-                if (result.rows[0].prefix && result.rows[0].prefix != "") {
-                    result_value = result.rows[0].prefix + result_value;
-                }
-                if (result.rows[0].suffix && result.rows[0].suffix != "") {
-                    result_value = result_value + result.rows[0].suffix;
+                if (err) {
+                    console.error('error running query (SELECT)', err);
+                    rollback(client, done);
+                    //res.json({"status": 423, "msg": "database error"});
+                    res.json({"status": 500, "msg": "database error"});
+                    return;
                 }
 
-                client.query('UPDATE numbering SET last_value = $2 WHERE id = $1', [record_id, last_value], function (err, result) {
-                    if (err) return rollback(client);
-                    //disconnect after successful commit
-                    //client.query('COMMIT', client.end.bind(client));
+                if (result.rows.length == 0) {
+                    res.json({"status": 404, "msg": "invalid identifier"});
+                    rollback(client, done);
                     done();
+                } else {
+                    record_id = result.rows[0].record_id;
+                    result_value = last_value = parseInt(result.rows[0].last_value, 10) + 1;
 
-                    res.json({"status": 200, 'last_value': "" + result_value + "" });
-                });
-            }
+                    if (result.rows[0].is_padding == 1) {
+                        result_value = _s.lpad(last_value, result.rows[0].padding_length, result.rows[0].padding_character);
+                    }
+                    if (result.rows[0].prefix && result.rows[0].prefix != "") {
+                        result_value = result.rows[0].prefix + result_value;
+                    }
+                    if (result.rows[0].suffix && result.rows[0].suffix != "") {
+                        result_value = result_value + result.rows[0].suffix;
+                    }
+
+                    client.query('UPDATE numbering SET last_value = $2 WHERE id = $1', [record_id, last_value], function (err, result) {
+                        if (err) {
+                            console.error('error running query (UPDATE)', err);
+                            rollback(client, done);
+                            res.json({"status": 500, "msg": "database error"});
+                        } else {
+                            client.query('COMMIT', done);
+
+                            res.json({"status": 200, 'last_value': "" + result_value + ""});
+                        }
+                    });
+                }
+            });
         });
     });
 });
