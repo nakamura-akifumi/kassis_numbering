@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var pg = require('pg');
+var pg = require('pg').native;
 var path = require('path');
 var _s = require("underscore.string");
 
@@ -26,7 +26,7 @@ router.get('/identifiers', function (req, res) {
 
     pg.connect(conString, function(err, client, done) {
         if (err) {
-            res.json({"status": 500, "msg": "database error."});
+            res.json({"s": 500, "msg": "database error."});
             return;
         }
 
@@ -232,7 +232,7 @@ router.get('/numbering/:identifier', function (req, res) {
 
     pg.connect(conString, function(err, client, done) {
         if (err) {
-            res.json({"status": 500, "msg": "database connect error."});
+            res.json({"s": 500, "m": "database connect error."});
             return;
         }
 
@@ -245,13 +245,13 @@ router.get('/numbering/:identifier', function (req, res) {
                 if (err) {
                     console.error('error running query (SELECT)', err);
                     rollback(client, done);
-                    //res.json({"status": 423, "msg": "database error"});
-                    res.json({"status": 500, "msg": "database error"});
+                    //res.json({"s": 423, "m": "database error"});
+                    res.json({"s": 500, "m": "database error"});
                     return;
                 }
 
                 if (result.rows.length == 0) {
-                    res.json({"status": 404, "msg": "invalid identifier"});
+                    res.json({"s": 404, "m": "invalid identifier"});
                     rollback(client, done);
                     done();
                 } else {
@@ -272,11 +272,11 @@ router.get('/numbering/:identifier', function (req, res) {
                         if (err) {
                             console.error('error running query (UPDATE)', err);
                             rollback(client, done);
-                            res.json({"status": 500, "msg": "database error"});
+                            res.json({"s": 500, "m": "database error"});
                         } else {
                             client.query('COMMIT', done);
 
-                            res.json({"status": 200, 'last_value': "" + result_value + ""});
+                            res.json({"s": 200, 'v': "" + result_value + ""});
                         }
                     });
                 }
