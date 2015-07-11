@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var path = require('path');
 
-var listen_port = process.env.KASSIS_NUMBER_LISTEN_PORT || 3000;
+var listen_port = process.env.KASSIS_NUMBER_LISTEN_PORT || 59630;
 
 var routes = require('./server/index');
 
